@@ -1,4 +1,5 @@
-# Code to make deletion request for google analytics, for a given session
+# Google analytics deletion request
+Code to make deletion request for google analytics, for a given session, using Admin api.
 
 ## Expected network response
 
