@@ -1,3 +1,4 @@
+
 export const submitAnalyticsUserDeletion = async (userId: string, propertyId: string = "541696789", recaptchaToken?: string | null): Promise<void> => {
   try {
     const headers: Record<string, string> = {
@@ -19,25 +20,33 @@ export const submitAnalyticsUserDeletion = async (userId: string, propertyId: st
   }
 };
 
+
+
 export const revokeConsent = () => {
   if (typeof window !== 'undefined') {
     // Disable Google Analytics tracking immediately in browser window
     (window as any)[`ga-disable-${MEASUREMENT_ID}`] = true;
 
-    // Clear any Google Analytics cookies from the browser
-    document.cookie.split(";").forEach((c) => {
-      const cookieName = c.split("=")[0].trim();
-      if (cookieName.startsWith("_ga")) {
-        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      }
-    });
+    // Clear all Google Analytics cookies from the browser
+    purgeAnalyticsCookies();
+
+    // Send Consent Mode v2 update to window.gtag / dataLayer
+    updateGtagConsent(false);
   }
 
+  // Update  Analytics consent state
   setConsent({
     analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    functionality_storage: 'denied',
+    security_storage: 'granted',
   });
+
+  analyticsInstance = null;
 };
+
 
 //Firebase related
 
